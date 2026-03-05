@@ -1,0 +1,36 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  fmt-and-validate:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/opentofu/opentofu:latest
+
+    strategy:
+      matrix:
+        environment:
+          - cloudflare_dns
+          - vsphere
+          - proxmox
+          - unifi
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Format check
+        run: tofu fmt -check -recursive modules/
+
+      - name: Init (${{ matrix.environment }})
+        run: tofu init -backend=false
+        working-directory: environments/${{ matrix.environment }}
+
+      - name: Validate (${{ matrix.environment }})
+        run: tofu validate
+        working-directory: environments/${{ matrix.environment }}

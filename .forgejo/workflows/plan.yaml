@@ -1,0 +1,47 @@
+name: Plan
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/opentofu/opentofu:latest
+
+    strategy:
+      matrix:
+        environment:
+          - cloudflare_dns
+          - vsphere
+          - proxmox
+          - unifi
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Init (${{ matrix.environment }})
+        run: tofu init -backend=false
+        working-directory: environments/${{ matrix.environment }}
+
+      - name: Plan (${{ matrix.environment }})
+        run: tofu plan -input=false -no-color
+        working-directory: environments/${{ matrix.environment }}
+        continue-on-error: true
+        env:
+          # Secrets injected from Forgejo repository settings
+          # Cloudflare
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # vSphere
+          TF_VAR_vsphere_server: ${{ secrets.VSPHERE_SERVER }}
+          TF_VAR_vsphere_user: ${{ secrets.VSPHERE_USER }}
+          TF_VAR_vsphere_password: ${{ secrets.VSPHERE_PASSWORD }}
+          # Proxmox
+          TF_VAR_proxmox_endpoint: ${{ secrets.PROXMOX_ENDPOINT }}
+          TF_VAR_proxmox_api_token: ${{ secrets.PROXMOX_API_TOKEN }}
+          # UniFi
+          TF_VAR_unifi_api_url: ${{ secrets.UNIFI_API_URL }}
+          TF_VAR_unifi_username: ${{ secrets.UNIFI_USERNAME }}
+          TF_VAR_unifi_password: ${{ secrets.UNIFI_PASSWORD }}
