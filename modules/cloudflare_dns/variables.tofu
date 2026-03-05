@@ -5,7 +5,8 @@ variable "dns_records" {
     type = string
     content = string
     ttl = optional(number, 1) # sætter TTL til 1 hvis ingenting er defined
-    proxied = optional(bool, false)
+    proxied  = optional(bool, false)
+    priority = optional(number, null)
   }))
 }
 

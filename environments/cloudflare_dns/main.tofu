@@ -28,7 +28,9 @@ module "dns" {
   # ==========================================
   # =                  MAIL                  =
   # ==========================================
-  { name = "mail",    type = "A",   content = "192.168.1.20", ttl = 300, proxied = false },
+  { name = "mail",    type = "A",   content = "192.168.1.20", ttl = 300,  proxied = false },
+  { name = "@",       type = "MX",  content = "mail.example.dk",  ttl = 300, proxied = false, priority = 10 },
+  { name = "@",       type = "MX",  content = "mail2.example.dk", ttl = 300, proxied = false, priority = 20 },
   { name = "@",       type = "TXT", content = "v=spf1 mx ~all",           proxied = false },
   { name = "_dmarc",  type = "TXT", content = "v=DMARC1; p=none;",        proxied = false },
   { name = "imap",    type = "CNAME", content = "mail.example.dk",        proxied = false },
