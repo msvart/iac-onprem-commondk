@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://planb.dk">
-  <img src="https://www.planb.dk/cdn/shop/files/Redlogo2016Trans_7287ea24-92d3-49e0-a1f6-d9b7d00ea89e.png?v=1614743547&width=400" alt="PlanB" width="200" />
+  <img src="https://www.planb.dk/cdn/shop/files/Redlogo2016Trans_7287ea24-92d3-49e0-a1f6-d9b7d00ea89e.png?v=1614743547&width=400" alt="PlanB" />
 </a>
 
 
