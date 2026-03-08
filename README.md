@@ -43,21 +43,34 @@ udgangspunkt du kan bygge videre på i dit eget miljø.
 ## Struktur
 
 ```
-├── modules/                      Genanvendelige moduler
-│   ├── cloudflare_dns/           DNS records i Cloudflare
-│   ├── proxmox_vm/               VM-provisioning i Proxmox VE (clone + cloud-init)
-│   ├── unifi_network/            VLAN-konfiguration i UniFi
-│   └── vsphere_vm/               VM-provisioning i VMware vSphere (clone + customize)
+├── modules/                        Genanvendelige moduler
+│   ├── cloudflare_dns/             DNS records i Cloudflare
+│   ├── proxmox_vm/                 VM-provisioning i Proxmox VE
+│   ├── unifi_network/              VLAN-konfiguration i UniFi
+│   └── vsphere_vm/                 VM-provisioning i VMware vSphere
 │
-├── environments/                 Miljøer der bruger modulerne
-│   ├── cloudflare_dns/           Cloudflare DNS records
-│   ├── proxmox/                  Proxmox VE VM-provisioning
-│   ├── unifi/                    UniFi VLAN-konfiguration
-│   └── vsphere/                  vSphere VM-provisioning
+├── environments/                   Miljøer der bruger modulerne
+│   ├── cloudflare_dns/
+│   │   ├── main.tofu               Provider + module-kald
+│   │   ├── variables.tofu          Provider credentials
+│   │   └── README.md               Dokumentation + eksempler
+│   ├── proxmox/
+│   │   ├── main.tofu
+│   │   ├── variables.tofu
+│   │   └── README.md
+│   ├── unifi/
+│   │   ├── main.tofu
+│   │   ├── variables.tofu
+│   │   └── README.md
+│   └── vsphere/
+│       ├── main.tofu
+│       ├── variables.tofu
+│       └── README.md
 │
-└── .forgejo/workflows/           CI/CD pipelines
-    ├── lint.yaml                 tofu fmt + validate på push/PR
-    └── plan.yaml                 tofu plan på PR
+└── .forgejo/
+    ├── PULL_REQUEST_TEMPLATE.yaml   PR-skabelon
+    └── workflows/
+        └── opentofu.yaml           CI/CD pipeline
 ```
 
 ## Environments
