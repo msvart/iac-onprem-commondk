@@ -41,7 +41,23 @@ provider "unifi" {
 module "networks" {
   source = "../../modules/unifi_network"
 
-  site = "default"
+  site = "DOMAIN.EXAMPLE" //indsæt root dommain her
+
+  networks = [
+
+  ]
+}
+
+
+/*
+
+    # ==========================================
+    # =             EKSEMPELOPSÆTNING                 =
+    # ==========================================
+module "networks" {
+  source = "../../modules/unifi_network"
+
+  site = "DOMAIN.EXAMPLE" //indsæt root dommain her
 
   networks = [
     # ==========================================
@@ -123,3 +139,6 @@ module "networks" {
     },
   ]
 }
+
+
+ */

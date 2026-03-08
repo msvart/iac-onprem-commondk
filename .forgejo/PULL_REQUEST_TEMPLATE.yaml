@@ -1,0 +1,70 @@
+name: Infrastruktur ændring
+about: Ændring af infrastruktur via OpenTofu
+body:
+  - type: input
+    id: ticket
+    attributes:
+      label: Ticket / bestilling
+      placeholder: "fx ITSM-1234 eller link til bestilling"
+    validations:
+      required: true
+
+  - type: textarea
+    id: beskrivelse
+    attributes:
+      label: Hvad ændres og hvorfor
+      placeholder: "fx: Tilføjer 2 nye VMs til bygstubben vSphere til ny applikation X"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: paavirkede_systemer
+    attributes:
+      label: Berørte systemer
+      multiple: true
+      options:
+        - vSphere / VMs
+        - Netbox
+        - Cloudflare
+        - Netværk
+        - IBMi
+        - Linux servere
+        - infra-repo
+        - Andet
+    validations:
+      required: true
+
+  - type: textarea
+    id: nedetid
+    attributes:
+      label: Forventet nedetid / påvirkning
+      placeholder: "fx: Ingen nedetid, eller: Switch genstartes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: manuelle_trin
+    attributes:
+      label: Manuelle trin før/efter apply
+      placeholder: "fx: Ingen, eller: NetBox skal opdateres manuelt med ny prefix før apply"
+      value: "Ingen"
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback-plan
+      placeholder: "fx: Revert commit og apply, eller: Manuel sletning af X"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: tjekliste
+    attributes:
+      label: Tjekliste
+      options:
+        - label: Ingen passwords/secrets er hardkodet
+          required: true
+        - label: Ændringen er aftalt med relevante parter
+          required: false
+        - label: Ændringsvindue er aftalt (hvis relevant)
+          required: false

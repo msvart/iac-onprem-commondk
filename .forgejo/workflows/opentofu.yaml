@@ -1,0 +1,78 @@
+name: OpenTofu Workflow
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  opentofu:
+    runs-on: host-runner
+    strategy:
+      matrix:
+        directory: [netbox, cloudflare]
+      max-parallel: 1
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.GARAGE_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.GARAGE_SECRET_ACCESS_KEY }}
+      TF_INPUT: "false"
+      TF_VAR_netbox_token: ${{ secrets.NETBOX_TOKEN }}
+      TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD^ HEAD -- ${{ matrix.directory }}; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: OpenTofu Init
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: ${{ matrix.directory }}
+        run: tofu init -input=false
+
+      - name: OpenTofu Plan
+        if: steps.changes.outputs.changed == 'true' && github.event_name == 'pull_request'
+        working-directory: ${{ matrix.directory }}
+        run: |
+          set -e
+
+          tofu plan -input=false -no-color 2>&1 | tee plan-output.txt
+
+          BODY=$(awk '
+            /^OpenTofu will perform the following actions:/ {capture=1}
+            /^Note: You didn'\''t use the -out option/ {capture=0}
+            capture {print}
+          ' plan-output.txt)
+
+          if [ -z "$BODY" ]; then
+            BODY=$(tail -n 20 plan-output.txt)
+          fi
+
+          if [ ${#BODY} -gt 60000 ]; then
+            BODY="${BODY:0:60000}... (truncated)"
+          fi
+
+          jq -n \
+            --arg dir "${{ matrix.directory }}" \
+            --arg body "$BODY" \
+            '{body: ("## 📋 Plan: `" + $dir + "`\n```text\n" + $body + "\n```")}' \
+            > comment.json
+
+          curl --fail-with-body -X POST \
+            -H "Authorization: token ${{ secrets.FORGEJO_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data @comment.json \
+            "${GITHUB_SERVER_URL}/api/v1/repos/${GITHUB_REPOSITORY}/issues/${{ github.event.pull_request.number }}/comments"
+
+      - name: OpenTofu Apply
+        if: steps.changes.outputs.changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        working-directory: ${{ matrix.directory }}
+        run: tofu apply -input=false -auto-approve -no-color
