@@ -50,15 +50,24 @@ udgangspunkt du kan bygge videre på i dit eget miljø.
 │   └── vsphere_vm/               VM-provisioning i VMware vSphere (clone + customize)
 │
 ├── environments/                 Miljøer der bruger modulerne
-│   ├── cloudflare_dns/           DNS for example.dk (16 records)
-│   ├── proxmox/                  Proxmox VMs — Docker, K8s, NAS, backup
-│   ├── unifi/                    Netværkssegmentering — 6 VLANs
-│   └── vsphere/                  vSphere VMs — web, DB, monitoring, mail
+│   ├── cloudflare_dns/           Cloudflare DNS records
+│   ├── proxmox/                  Proxmox VE VM-provisioning
+│   ├── unifi/                    UniFi VLAN-konfiguration
+│   └── vsphere/                  vSphere VM-provisioning
 │
 └── .forgejo/workflows/           CI/CD pipelines
     ├── lint.yaml                 tofu fmt + validate på push/PR
     └── plan.yaml                 tofu plan på PR
 ```
+
+## Environments
+
+| Environment | Beskrivelse | Dokumentation |
+|:---|:---|:---|
+| `cloudflare_dns` | DNS-records i Cloudflare (A, AAAA, CNAME, MX, TXT) | [README](environments/cloudflare_dns/README.md) |
+| `proxmox` | VM-provisioning i Proxmox VE via cloud-init templates | [README](environments/proxmox/README.md) |
+| `unifi` | VLAN- og netværkssegmentering via UniFi | [README](environments/unifi/README.md) |
+| `vsphere` | VM-provisioning i VMware vSphere via template cloning | [README](environments/vsphere/README.md) |
 
 ## Providers
 
