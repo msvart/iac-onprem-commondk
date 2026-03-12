@@ -11,7 +11,7 @@ jobs:
     runs-on: host-runner
     strategy:
       matrix:
-        directory: [netbox, cloudflare]
+        directory: [environments/vsphere, environments/unifi]
       max-parallel: 1
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.GARAGE_ACCESS_KEY_ID }}
@@ -19,6 +19,12 @@ jobs:
       TF_INPUT: "false"
       TF_VAR_netbox_token: ${{ secrets.NETBOX_TOKEN }}
       TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TF_VAR_vsphere_server: ${{ vars.VSPHERE_SERVER }}
+      TF_VAR_vsphere_user: ${{ secrets.VSPHERE_USER }}
+      TF_VAR_vsphere_password: ${{ secrets.VSPHERE_PASSWORD }}
+      TF_VAR_unifi_api_url: ${{ vars.UNIFI_API_URL }}
+      TF_VAR_unifi_username: ${{ secrets.UNIFI_USERNAME }}
+      TF_VAR_unifi_password: ${{ secrets.UNIFI_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
