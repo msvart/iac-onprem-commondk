@@ -67,7 +67,7 @@ resource "vsphere_virtual_machine" "this" {
   name             = each.value.name
   resource_pool_id = data.vsphere_compute_cluster.this.resource_pool_id
   datastore_id     = data.vsphere_datastore.this.id
-  folder           = coalesce(each.value.folder, var.folder)
+  folder           = try(coalesce(each.value.folder, var.folder), null)
   annotation       = each.value.annotation
 
   num_cpus = each.value.cpus
@@ -107,7 +107,7 @@ resource "vsphere_virtual_machine" "this" {
     customize {
       linux_options {
         host_name = each.value.name
-        domain    = coalesce(each.value.domain, var.domain)
+        domain    = try(coalesce(each.value.domain, var.domain), null)
       }
 
       network_interface {
@@ -116,7 +116,7 @@ resource "vsphere_virtual_machine" "this" {
       }
 
       ipv4_gateway    = each.value.ipv4_gateway
-      dns_server_list = coalesce(each.value.dns_servers, var.dns_servers)
+      dns_server_list = try(coalesce(each.value.dns_servers, var.dns_servers), null)
     }
   }
 
